@@ -79,11 +79,12 @@
   @keyframes blink { 50% { opacity: .25; } }
 
   /* ----- palco do certificado ----- */
-  .stage { perspective: 1600px; padding: 14px 0 30px; animation: rise 1s .12s both; }
+  .stage { perspective: 720px; padding: 30px 0 46px; animation: rise 1s .12s both; }
   .cert-frame {
-    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-    transition: transform .25s ease-out;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--sc, 1));
+    transition: transform .12s ease-out;
     transform-style: preserve-3d;
+    will-change: transform;
   }
   .cert-glow {
     border-radius: 12px;
@@ -542,12 +543,14 @@ function initTilt() {
     const r = stage.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width - .5;
     const py = (e.clientY - r.top) / r.height - .5;
-    frame.style.setProperty('--ry', (px * 7).toFixed(2) + 'deg');
-    frame.style.setProperty('--rx', (-py * 5).toFixed(2) + 'deg');
+    frame.style.setProperty('--ry', (px * 26).toFixed(2) + 'deg');
+    frame.style.setProperty('--rx', (-py * 20).toFixed(2) + 'deg');
+    frame.style.setProperty('--sc', '1.04');
   });
   stage.addEventListener('pointerleave', () => {
     frame.style.setProperty('--ry', '0deg');
     frame.style.setProperty('--rx', '0deg');
+    frame.style.setProperty('--sc', '1');
   });
 }
 

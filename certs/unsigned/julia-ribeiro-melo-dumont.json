@@ -3,7 +3,7 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:baa50547-b984-4a77-a3c3-444f7852ae69",
+  "id": "urn:uuid:5b488943-b638-4519-b52e-363ddf4d1f49",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
@@ -47,8 +47,8 @@
     "periodLabel": "Certificado · 2026.1",
     "reg": "021/2026",
     "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
-    "president": "Nome do Presidente",
-    "vicePresident": "Nome do Vice-Presidente",
+    "president": "Igor Conrado",
+    "vicePresident": "Joshua Azze",
     "issueDateLabel": "18 / MAI / 2026"
   }
 }
