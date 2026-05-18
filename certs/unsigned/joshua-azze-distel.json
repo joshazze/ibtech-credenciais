@@ -3,12 +3,12 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:d0a54ef7-ef7e-4ef3-92a6-f981892696a3",
+  "id": "urn:uuid:e8736291-335f-4512-92d1-9c58f82c1d92",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
   ],
-  "name": "Teste de Credencial - IbTech",
+  "name": "Certificado de Participação — IBtech 2026.1",
   "issuer": {
     "@context": [
       "https://www.w3.org/ns/credentials/v2",
@@ -22,7 +22,7 @@
     "description": "Liga academica de tecnologia do Ibmec BH.",
     "url": "https://joshazze.github.io/ibtech-frontend-2026-1/"
   },
-  "validFrom": "2026-05-18T12:04:33.414Z",
+  "validFrom": "2026-05-18T12:00:00.000Z",
   "credentialSubject": {
     "type": [
       "AchievementSubject"
@@ -30,15 +30,26 @@
     "name": "Joshua Azze Distel",
     "identifier": "jazzedistel@gmail.com",
     "achievement": {
-      "id": "https://joshazze.github.io/ibtech-credenciais/badges/teste-de-credencial-ibtech",
+      "id": "https://joshazze.github.io/ibtech-credenciais/badges/certificado-de-participacao-ibtech-2026-1",
       "type": [
         "Achievement"
       ],
-      "name": "Teste de Credencial - IbTech",
-      "description": "Credencial emitida para validar o pipeline de emissao de credenciais verificaveis on-chain da IbTech.",
+      "name": "Certificado de Participação — IBtech 2026.1",
+      "description": "Certificado de participação nas atividades da IBtech, Liga de Software do Ibmec BH, no semestre 2026.1.",
       "criteria": {
-        "narrative": "Executou com sucesso uma emissao de teste do sistema de credenciais da IbTech."
+        "narrative": "Cumpriu os requisitos de presença, desenvolveu e teve aprovado o projeto de conclusão dentro dos critérios estabelecidos, e cumpriu suas obrigações sem qualquer medida disciplinar."
       }
     }
+  },
+  "ibtech": {
+    "variant": "solo",
+    "kicker": "Certificado de Participação",
+    "leagueLabel": "Liga de Software · Ibmec BH",
+    "periodLabel": "Certificado · 2026.1",
+    "reg": "001/2026",
+    "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
+    "president": "Nome do Presidente",
+    "vicePresident": "Nome do Vice-Presidente",
+    "issueDateLabel": "18 / MAI / 2026"
   }
 }
