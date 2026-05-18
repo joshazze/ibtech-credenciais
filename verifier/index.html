@@ -3,100 +3,191 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verificação de Credencial — IbTech</title>
+<title>Verificação de credencial — IBtech</title>
 <style>
   :root {
-    --bg: #0e1116;
-    --card: #171b22;
-    --line: #2a313c;
-    --text: #e6e9ef;
-    --muted: #9aa4b2;
-    --accent: #3b6ef5;
-    --ok: #34c759;
-    --fail: #ff5b5b;
-    --warn: #e8a33d;
-    --pending: #8a93a3;
+    --page: #E7E9EF;
+    --panel: #ffffff;
+    --panel-line: #E2E3E8;
+    --ink: #1c2540;
+    --muted: #8a8f9c;
+    --accent: #2f6bff;
+    --ok: #2faf54;
+    --fail: #e0492f;
+    --warn: #d98a1f;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--page);
     font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    display: flex;
-    justify-content: center;
-    padding: 40px 20px;
+    color: var(--ink);
+    padding: 36px 18px;
+    display: flex; flex-direction: column; align-items: center;
   }
-  main { width: 100%; max-width: 560px; }
-  .brand {
-    display: flex; align-items: center; gap: 10px;
-    font-weight: 700; letter-spacing: .5px; margin-bottom: 24px;
+  .wrap { width: 100%; max-width: 900px; }
+  .pagehead { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+  /* ---------- certificado ---------- */
+  .cert {
+    container-type: inline-size;
+    width: 100%;
+    aspect-ratio: 1.414 / 1;
+    border-radius: 8px;
+    box-shadow: 0 18px 50px -24px rgba(20, 30, 60, .45);
+    display: flex; flex-direction: column;
+    padding: 6.4cqw 7cqw;
+    overflow: hidden;
   }
-  .brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 28px;
-    margin-bottom: 18px;
+  .cert[data-variant="solo"] {
+    background: #F4F4F2; color: #1B2A47;
+    --cert-label: #9aa0a8; --cert-line: #cdcec9; --cert-accent: #2f6bff; --cert-body: #39435d;
   }
-  .badge-name { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
-  .badge-desc { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
-  .field { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 14px; }
-  .field .k { color: var(--muted); }
-  .field .v { text-align: right; font-weight: 600; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 14px; }
-  .check { display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 14px; }
+  .cert[data-variant="joint"] {
+    background: #0b0b0c; color: #f0f0f2;
+    --cert-label: #6f7480; --cert-line: #2c2d31; --cert-accent: #3b82f6; --cert-body: #c9cbd2;
+  }
+
+  .cert-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 4cqw; }
+  .cert-brand { display: flex; align-items: center; gap: 1.6cqw; }
+  .cert-brand img { height: 4.6cqw; width: auto; display: block; }
+  .cert-wordmark { font-size: 3cqw; font-weight: 800; letter-spacing: -.01em; }
+  .cert-brand .bar { width: 1px; height: 3.2cqw; background: var(--cert-line); }
+  .cert-league, .cert-period {
+    font-size: 1.12cqw; letter-spacing: .24em; text-transform: uppercase;
+    color: var(--cert-label); font-weight: 600;
+  }
+  .cert-period { text-align: right; white-space: nowrap; }
+
+  .cert-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .cert-kicker {
+    font-size: 1.5cqw; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--cert-accent); font-weight: 700;
+  }
+  .cert-to {
+    font-size: 1.12cqw; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--cert-label); margin-top: 2.4cqw; font-weight: 600;
+  }
+  .cert-name { font-size: 5.2cqw; font-weight: 600; margin: 1.4cqw 0 3cqw; letter-spacing: -.01em; }
+  .cert-text { font-size: 2cqw; line-height: 1.78; color: var(--cert-body); max-width: 82%; }
+  .cert-text strong { color: var(--cert-accent); font-weight: 700; }
+
+  .cert-foot { display: flex; align-items: flex-end; gap: 4cqw; }
+  .sig { flex: 1; }
+  .sig-line { border-top: 1.6px solid var(--cert-line); padding-top: 1.4cqw; }
+  .sig-role {
+    font-size: 1.04cqw; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--cert-label); font-weight: 600;
+  }
+  .sig-name { font-size: 1.7cqw; margin-top: .5cqw; }
+  .cert-reg {
+    text-align: right; font-size: 1.04cqw; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--cert-label); line-height: 2; font-weight: 600; white-space: nowrap;
+  }
+  .cert-reg b { color: var(--cert-body); }
+
+  /* ---------- painel de verificacao ---------- */
+  .panel {
+    background: var(--panel); border: 1px solid var(--panel-line);
+    border-radius: 12px; padding: 24px; margin-top: 20px;
+  }
+  .panel h2 {
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  .check { display: flex; align-items: center; gap: 12px; padding: 9px 0; font-size: 14px; }
   .check .icon {
     width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700;
-    background: #232a35; color: var(--pending);
+    font-size: 13px; font-weight: 700; background: #eef0f3; color: var(--muted);
   }
-  .check.ok .icon { background: rgba(52,199,89,.15); color: var(--ok); }
-  .check.fail .icon { background: rgba(255,91,91,.15); color: var(--fail); }
-  .check.warn .icon { background: rgba(232,163,61,.15); color: var(--warn); }
+  .check.ok .icon { background: rgba(47, 175, 84, .14); color: var(--ok); }
+  .check.fail .icon { background: rgba(224, 73, 47, .14); color: var(--fail); }
+  .check.warn .icon { background: rgba(217, 138, 31, .14); color: var(--warn); }
   .verdict {
-    margin-top: 18px; padding: 14px; border-radius: 10px;
-    text-align: center; font-weight: 700; font-size: 15px;
+    margin-top: 16px; padding: 13px; border-radius: 9px;
+    text-align: center; font-weight: 700; font-size: 14px;
+    background: #eef0f3; color: var(--muted);
   }
-  .verdict.ok { background: rgba(52,199,89,.13); color: var(--ok); }
-  .verdict.fail { background: rgba(255,91,91,.13); color: var(--fail); }
-  .verdict.warn { background: rgba(232,163,61,.13); color: var(--warn); }
-  .verdict.pending { background: #232a35; color: var(--muted); }
+  .verdict.ok { background: rgba(47, 175, 84, .12); color: var(--ok); }
+  .verdict.fail { background: rgba(224, 73, 47, .12); color: var(--fail); }
+  .verdict.warn { background: rgba(217, 138, 31, .12); color: var(--warn); }
+  .panel-foot { display: flex; align-items: center; gap: 18px; margin-top: 16px; flex-wrap: wrap; }
+  .qr { width: 96px; height: 96px; flex-shrink: 0; }
+  .qr svg { width: 100%; height: 100%; display: block; }
+  .panel-links { display: flex; flex-direction: column; gap: 7px; font-size: 13px; }
   a { color: var(--accent); }
-  .links { font-size: 13px; margin-top: 14px; display: flex; gap: 18px; flex-wrap: wrap; }
   .retry {
-    background: none; border: 1px solid var(--line); color: var(--accent);
-    font: inherit; font-size: 13px; cursor: pointer; border-radius: 8px; padding: 4px 10px;
+    background: none; border: 1px solid var(--panel-line); color: var(--accent);
+    font: inherit; font-size: 13px; cursor: pointer; border-radius: 7px; padding: 4px 10px;
+    align-self: flex-start;
+  }
+
+  @media (max-width: 560px) { .cert-text { max-width: 100%; } }
+  @media print {
+    @page { size: A4 landscape; margin: 0; }
+    body { background: #fff; padding: 0; }
+    .pagehead, .panel { display: none; }
+    .wrap { max-width: none; }
+    .cert { aspect-ratio: auto; height: 100vh; border-radius: 0; box-shadow: none; }
   }
 </style>
 </head>
 <body>
-<main>
-  <div class="brand"><span class="dot"></span> IbTech · Verificação de Credencial</div>
+<div class="wrap">
+  <div class="pagehead">Verificação de credencial · IBtech</div>
 
-  <div class="card" id="card">
-    <div class="badge-name" id="badgeName">Carregando…</div>
-    <div class="badge-desc" id="badgeDesc"></div>
-    <div class="field"><span class="k">Concedido a</span><span class="v" id="fRecipient">—</span></div>
-    <div class="field"><span class="k">Emitido por</span><span class="v" id="fIssuer">—</span></div>
-    <div class="field"><span class="k">Data de emissão</span><span class="v" id="fDate">—</span></div>
-    <div class="field"><span class="k">Rede</span><span class="v" id="fChain">—</span></div>
+  <div class="cert" id="cert" data-variant="solo">
+    <div class="cert-head">
+      <div class="cert-brand">
+        <img src="assets/ibtech-logo.png" alt="IBtech">
+        <span class="cert-wordmark">IBtech</span>
+        <span class="bar"></span>
+        <span class="cert-league" id="league">Liga de Software · Ibmec BH</span>
+      </div>
+      <div class="cert-period" id="period">Certificado · 2026.1</div>
+    </div>
+
+    <div class="cert-body">
+      <div class="cert-kicker" id="kicker">— Certificado de Participação</div>
+      <div class="cert-to">// Concedido a</div>
+      <div class="cert-name" id="certName">—</div>
+      <p class="cert-text" id="certText"></p>
+    </div>
+
+    <div class="cert-foot">
+      <div class="sig">
+        <div class="sig-line"></div>
+        <div class="sig-role">Presidente</div>
+        <div class="sig-name" id="president">—</div>
+      </div>
+      <div class="sig">
+        <div class="sig-line"></div>
+        <div class="sig-role">Vice-Presidente</div>
+        <div class="sig-name" id="vicePresident">—</div>
+      </div>
+      <div class="cert-reg">
+        <div>REG <b id="reg">—</b></div>
+        <div id="issueDate">—</div>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Verificação</h2>
+  <div class="panel">
+    <h2>Verificação on-chain</h2>
     <div class="check" id="c1"><span class="icon">·</span><span>Integridade — o conteúdo não foi alterado</span></div>
     <div class="check" id="c2"><span class="icon">·</span><span>Inclusão na árvore de Merkle ancorada</span></div>
     <div class="check" id="c3"><span class="icon">·</span><span>Ancoragem confirmada na blockchain</span></div>
-    <div class="verdict pending" id="verdict">Verificando…</div>
-    <div class="links" id="links"></div>
+    <div class="verdict" id="verdict">Verificando…</div>
+    <div class="panel-foot">
+      <div class="qr" id="qr"></div>
+      <div class="panel-links" id="links"></div>
+    </div>
   </div>
-</main>
+</div>
 
+<script src="qrcode.js"></script>
 <script type="module">
-// RPCs publicos por rede -- tentados em ordem, com fallback, porque
-// endpoints publicos aplicam rate limit e caem de vez em quando.
+// RPCs publicos por rede -- tentados em ordem, com fallback (rate limit cai).
 const CHAINS = {
   'ethereum-sepolia': {
     rpc: [
@@ -108,17 +199,11 @@ const CHAINS = {
     explorer: 'https://sepolia.etherscan.io/tx/',
   },
   'polygon-amoy': {
-    rpc: [
-      'https://rpc-amoy.polygon.technology',
-      'https://polygon-amoy-bor-rpc.publicnode.com',
-    ],
+    rpc: ['https://rpc-amoy.polygon.technology', 'https://polygon-amoy-bor-rpc.publicnode.com'],
     explorer: 'https://amoy.polygonscan.com/tx/',
   },
   'polygon': {
-    rpc: [
-      'https://polygon-rpc.com',
-      'https://polygon-bor-rpc.publicnode.com',
-    ],
+    rpc: ['https://polygon-rpc.com', 'https://polygon-bor-rpc.publicnode.com'],
     explorer: 'https://polygonscan.com/tx/',
   },
 };
@@ -156,9 +241,6 @@ async function verifyMerkle(leaf, path, root) {
   for (const s of path) h = s.left ? await hashPair(s.left, h) : await hashPair(h, s.right);
   return h === root;
 }
-
-// Busca a transacao tentando cada RPC. Lanca erro se NENHUM responder
-// (situacao inconclusiva, distinta de "transacao nao encontrada").
 async function fetchTx(rpcs, hash) {
   let reached = false;
   for (const rpc of rpcs) {
@@ -172,23 +254,37 @@ async function fetchTx(rpcs, hash) {
       const j = await res.json();
       if (j.error) continue;
       reached = true;
-      return j.result; // objeto da tx, ou null se realmente nao existe
-    } catch { /* tenta o proximo RPC */ }
+      return j.result;
+    } catch { /* tenta o proximo */ }
   }
   if (!reached) throw new Error('nenhum RPC respondeu');
   return null;
 }
 
+// Escapa HTML e converte **destaque** em negrito.
+function richText(s) {
+  const esc = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return esc.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
 function setCheck(id, state) {
   const el = document.getElementById(id);
   el.classList.remove('ok', 'fail', 'warn');
   el.classList.add(state);
   el.querySelector('.icon').textContent = state === 'ok' ? '✓' : state === 'warn' ? '!' : '✕';
 }
+function renderQR(url) {
+  if (!window.qrcode) return;
+  try {
+    const qr = window.qrcode(0, 'M');
+    qr.addData(url);
+    qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0 });
+  } catch { /* QR e opcional */ }
+}
 
 async function run() {
   const id = new URLSearchParams(location.search).get('id');
-  if (!id) { document.getElementById('badgeName').textContent = 'Informe ?id=<credencial> na URL'; return; }
+  if (!id) { document.getElementById('certName').textContent = 'Informe ?id=<credencial> na URL'; return; }
 
   let cert;
   try {
@@ -196,29 +292,38 @@ async function run() {
     if (!res.ok) throw new Error();
     cert = await res.json();
   } catch {
-    document.getElementById('badgeName').textContent = 'Credencial não encontrada';
+    document.getElementById('certName').textContent = 'Credencial não encontrada';
     return;
   }
 
-  const subj = cert.credentialSubject;
-  document.getElementById('badgeName').textContent = subj.achievement.name;
-  document.getElementById('badgeDesc').textContent = subj.achievement.description;
-  document.getElementById('fRecipient').textContent = subj.name;
-  document.getElementById('fIssuer').textContent = cert.issuer.name;
-  document.getElementById('fDate').textContent = new Date(cert.validFrom).toLocaleDateString('pt-BR');
-  document.getElementById('fChain').textContent = cert.proof.chain;
+  // ---- renderiza o certificado ----
+  const ib = cert.ibtech || {};
+  document.getElementById('cert').dataset.variant = ib.variant === 'joint' ? 'joint' : 'solo';
+  document.getElementById('league').textContent = ib.leagueLabel || '';
+  document.getElementById('period').textContent = ib.periodLabel || '';
+  document.getElementById('kicker').textContent = '— ' + (ib.kicker || 'Certificado');
+  document.getElementById('certName').textContent = cert.credentialSubject.name;
+  document.getElementById('certText').innerHTML = richText(ib.body || '');
+  document.getElementById('president').textContent = ib.president || '';
+  document.getElementById('vicePresident').textContent = ib.vicePresident || '';
+  document.getElementById('reg').textContent = ib.reg || '—';
+  document.getElementById('issueDate').textContent = ib.issueDateLabel || '';
+  document.title = `${cert.credentialSubject.name} — ${ib.kicker || 'Certificado'} IBtech`;
 
+  // ---- verificacao ----
   const proof = cert.proof;
-  const net = CHAINS[proof.chain];
+  if (!proof) {
+    document.getElementById('verdict').textContent = 'Credencial ainda não ancorada.';
+    return;
+  }
+  const net = CHAINS[proof.chain] || CHAINS['ethereum-sepolia'];
 
-  // 1 e 2 -- locais, deterministicas, nao dependem de rede.
   const c1 = (await certHash(cert)) === proof.targetHash;
   setCheck('c1', c1 ? 'ok' : 'fail');
 
   const c2 = await verifyMerkle(proof.targetHash, proof.merklePath, proof.merkleRoot);
   setCheck('c2', c2 ? 'ok' : 'fail');
 
-  // 3 -- on-chain. Tres estados: ok | fail (adulterada) | warn (RPC fora do ar).
   let c3 = 'fail';
   try {
     const tx = await fetchTx(net.rpc, proof.anchorTransaction);
@@ -231,18 +336,18 @@ async function run() {
   const verdict = document.getElementById('verdict');
   if (c1 && c2 && c3 === 'ok') {
     verdict.className = 'verdict ok';
-    verdict.textContent = '✓ Credencial autêntica e verificada on-chain';
+    verdict.textContent = '✓ Certificado autêntico — registrado e verificado na blockchain';
   } else if (c1 && c2 && c3 === 'warn') {
     verdict.className = 'verdict warn';
-    verdict.textContent = 'Integridade confirmada. A confirmação on-chain não respondeu agora — tente novamente.';
+    verdict.textContent = 'Integridade confirmada. A confirmação on-chain não respondeu — tente novamente.';
   } else {
     verdict.className = 'verdict fail';
-    verdict.textContent = '✕ Credencial não pôde ser verificada';
+    verdict.textContent = '✕ Certificado não pôde ser verificado';
   }
 
   const links = document.getElementById('links');
   links.innerHTML =
-    `<a href="${net.explorer}${proof.anchorTransaction}" target="_blank" rel="noopener noreferrer">Ver transação on-chain</a>` +
+    `<a href="${net.explorer}${proof.anchorTransaction}" target="_blank" rel="noopener noreferrer">Ver registro on-chain</a>` +
     `<a href="../certs/signed/${id}.json" target="_blank" rel="noopener noreferrer">JSON da credencial</a>`;
   if (c3 === 'warn') {
     const btn = document.createElement('button');
@@ -251,6 +356,8 @@ async function run() {
     btn.onclick = () => location.reload();
     links.appendChild(btn);
   }
+
+  renderQR(location.href);
 }
 run();
 </script>
