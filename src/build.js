@@ -64,7 +64,7 @@ rows.forEach((r, i) => {
     credentialSubject: {
       type: ['AchievementSubject'],
       name: r.name,
-      identifier: r.email,
+      // identifier (e-mail) e opcional -- adicionado abaixo se a planilha trouxer.
       achievement: {
         id: badgeId,
         type: ['Achievement'],
@@ -86,6 +86,7 @@ rows.forEach((r, i) => {
       issueDateLabel: dateLabel(badge.issueDate),
     },
   };
+  if (r.email) cert.credentialSubject.identifier = r.email;
   const file = `certs/unsigned/${slug(r.name)}.json`;
   writeFileSync(file, JSON.stringify(cert, null, 2) + '\n');
   console.log(`gerado: ${file}  [${variant}, REG ${reg}]`);

@@ -3,7 +3,7 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:965f33a6-f08c-4062-a583-dc167f626c02",
+  "id": "urn:uuid:acce6b9c-2fc3-495d-9b3c-5aa86209ca93",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
@@ -27,7 +27,7 @@
     "type": [
       "AchievementSubject"
     ],
-    "name": "Joshua Azze Distel",
+    "name": "Antônia Villela Monteiro",
     "achievement": {
       "id": "https://joshazze.github.io/ibtech-credenciais/badges/certificado-de-participacao-ibtech-2026-1",
       "type": [
@@ -45,10 +45,34 @@
     "kicker": "Certificado de Participação",
     "leagueLabel": "Liga de Software · Ibmec BH",
     "periodLabel": "Certificado · 2026.1",
-    "reg": "032/2026",
+    "reg": "004/2026",
     "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
     "president": "Nome do Presidente",
     "vicePresident": "Nome do Vice-Presidente",
     "issueDateLabel": "18 / MAI / 2026"
+  },
+  "proof": {
+    "type": "MerkleProofIbTech2026",
+    "chain": "ethereum-sepolia",
+    "anchorTransaction": "0x2dd9671854232fbe9b1558031a367bdb273e93e83f3eda308e6c5e533295af73",
+    "merkleRoot": "9307b88c565fb9a58d86f1e187063c6ccccd6b11ca91cc6f08f0561e9ee66818",
+    "targetHash": "ebaf3208263e136647966f7823008ebc92220c93bc82ab3b51bf8990db149d29",
+    "merklePath": [
+      {
+        "left": "aee652c447c3b909e0edb7aabcd6e07a3f9f8cdd683bdff510eae6d624ecce12"
+      },
+      {
+        "left": "bdf984755a898fa12203f0acc80b4cae8eea5cd4c6793f45da8c0bbb7d2d7efa"
+      },
+      {
+        "right": "009efddccab508ff92bc40298d98ea9e6bc23fb4e465358239c5071ad603927e"
+      },
+      {
+        "right": "9d907fba9cb4cd7416720f6bbcf8800e8245c7a39f982b3110b2b5b1b2882043"
+      },
+      {
+        "right": "fc88177817241944b466ffa816639f7afa6dadaf7807b02d260e1fa028afadaf"
+      }
+    ]
   }
 }

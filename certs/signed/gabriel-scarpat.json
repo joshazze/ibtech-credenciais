@@ -3,7 +3,7 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:965f33a6-f08c-4062-a583-dc167f626c02",
+  "id": "urn:uuid:ce2ed989-beda-4d34-be43-3dbd039a5679",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
@@ -27,7 +27,7 @@
     "type": [
       "AchievementSubject"
     ],
-    "name": "Joshua Azze Distel",
+    "name": "Gabriel Scarpat",
     "achievement": {
       "id": "https://joshazze.github.io/ibtech-credenciais/badges/certificado-de-participacao-ibtech-2026-1",
       "type": [
@@ -45,10 +45,34 @@
     "kicker": "Certificado de Participação",
     "leagueLabel": "Liga de Software · Ibmec BH",
     "periodLabel": "Certificado · 2026.1",
-    "reg": "032/2026",
+    "reg": "014/2026",
     "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
     "president": "Nome do Presidente",
     "vicePresident": "Nome do Vice-Presidente",
     "issueDateLabel": "18 / MAI / 2026"
+  },
+  "proof": {
+    "type": "MerkleProofIbTech2026",
+    "chain": "ethereum-sepolia",
+    "anchorTransaction": "0x2dd9671854232fbe9b1558031a367bdb273e93e83f3eda308e6c5e533295af73",
+    "merkleRoot": "9307b88c565fb9a58d86f1e187063c6ccccd6b11ca91cc6f08f0561e9ee66818",
+    "targetHash": "a69c115a3dae6f54350311885af994a21b9a53ffff0f11d1766ed143a5c599e7",
+    "merklePath": [
+      {
+        "left": "eb3ce6ad384d80a0d69f460a89ed3fce624a137529d460a837ff0025eaddaef4"
+      },
+      {
+        "right": "9ad22104b4cf1c43719b5cc80f1e464a2e09396d46ccbd41ca33ce4145e0264d"
+      },
+      {
+        "left": "f0415ff34fedbd4fd1dff7fd10ab33bb1aac7d34625eb8c3779ce8160177e4f4"
+      },
+      {
+        "left": "794a32f315bafde8194ce49e974027cf6ee69f7293c517e0500061f515376cc2"
+      },
+      {
+        "right": "fc88177817241944b466ffa816639f7afa6dadaf7807b02d260e1fa028afadaf"
+      }
+    ]
   }
 }

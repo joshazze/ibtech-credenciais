@@ -4,237 +4,501 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Verificação de credencial — IBtech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --page: #E7E9EF;
-    --panel: #ffffff;
-    --panel-line: #E2E3E8;
-    --ink: #1c2540;
-    --muted: #8a8f9c;
-    --accent: #2f6bff;
-    --ok: #2faf54;
-    --fail: #e0492f;
-    --warn: #d98a1f;
+    --bg: #0a0b0e;
+    --ink: #eceef3;
+    --dim: #9499a6;
+    --faint: #5f6571;
+    --blue: #3b74ff;
+    --blue-lt: #88a6ff;
+    --ok: #43d17f;
+    --warn: #f2b23d;
+    --fail: #ff5f54;
+    --hair: rgba(255, 255, 255, .085);
+    --panel: rgba(255, 255, 255, .024);
+    --panel-2: rgba(255, 255, 255, .045);
+    --display: 'Bricolage Grotesque', sans-serif;
+    --body: 'Hanken Grotesk', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
   body {
-    background: var(--page);
-    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--body);
     color: var(--ink);
-    padding: 36px 18px;
-    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+    padding: 0 22px 80px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
-  .wrap { width: 100%; max-width: 900px; }
-  .pagehead { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
 
-  /* ---------- certificado ---------- */
+  /* ----- atmosfera ----- */
+  .aura {
+    position: fixed; top: -10%; left: 50%; width: 1100px; height: 1100px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(59, 116, 255, .26), rgba(59, 116, 255, 0) 62%);
+    filter: blur(40px); pointer-events: none; z-index: 0;
+    animation: breathe 9s ease-in-out infinite;
+  }
+  .aura.is-ok { background: radial-gradient(circle, rgba(67, 209, 127, .22), rgba(67, 209, 127, 0) 62%); }
+  @keyframes breathe { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+  .grain {
+    position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: .035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .shell { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
+
+  /* ----- topbar ----- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 26px 2px; animation: rise .8s .05s both;
+  }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand img { height: 30px; width: auto; }
+  .brand b { font-family: var(--display); font-weight: 800; font-size: 19px; letter-spacing: -.01em; }
+  .pill {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase;
+    padding: 8px 14px; border-radius: 100px;
+    border: 1px solid var(--hair); background: var(--panel); color: var(--dim);
+  }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); }
+  .pill.scan .dot { background: var(--blue); animation: blink 1s infinite; }
+  .pill.ok { color: var(--ok); border-color: rgba(67, 209, 127, .35); }
+  .pill.ok .dot { background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+  .pill.warn { color: var(--warn); border-color: rgba(242, 178, 61, .35); }
+  .pill.warn .dot { background: var(--warn); }
+  .pill.fail { color: var(--fail); border-color: rgba(255, 95, 84, .35); }
+  .pill.fail .dot { background: var(--fail); }
+  @keyframes blink { 50% { opacity: .25; } }
+
+  /* ----- palco do certificado ----- */
+  .stage { perspective: 1600px; padding: 14px 0 30px; animation: rise 1s .12s both; }
+  .cert-frame {
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform .25s ease-out;
+    transform-style: preserve-3d;
+  }
+  .cert-glow {
+    border-radius: 12px;
+    box-shadow: 0 40px 90px -40px rgba(0, 0, 0, .9), 0 0 0 1px var(--hair),
+                0 0 60px -20px rgba(59, 116, 255, .4);
+    transition: box-shadow .6s ease;
+  }
+  .cert-glow.is-ok { box-shadow: 0 40px 90px -40px rgba(0, 0, 0, .9), 0 0 0 1px rgba(67,209,127,.3),
+                0 0 70px -16px rgba(67, 209, 127, .42); }
+
+  /* ----- o documento ----- */
   .cert {
     container-type: inline-size;
-    width: 100%;
-    aspect-ratio: 1.414 / 1;
-    border-radius: 8px;
-    box-shadow: 0 18px 50px -24px rgba(20, 30, 60, .45);
-    display: flex; flex-direction: column;
-    padding: 6.4cqw 7cqw;
-    overflow: hidden;
+    width: 100%; aspect-ratio: 1.414 / 1;
+    border-radius: 12px; overflow: hidden;
+    display: flex; flex-direction: column; padding: 6.4cqw 7cqw;
   }
   .cert[data-variant="solo"] {
     background: #F4F4F2; color: #1B2A47;
-    --cert-label: #9aa0a8; --cert-line: #cdcec9; --cert-accent: #2f6bff; --cert-body: #39435d;
+    --cl: #9aa0a8; --ln: #cdcec9; --ac: #2f6bff; --bd: #39435d;
   }
   .cert[data-variant="joint"] {
     background: #0b0b0c; color: #f0f0f2;
-    --cert-label: #6f7480; --cert-line: #2c2d31; --cert-accent: #3b82f6; --cert-body: #c9cbd2;
+    --cl: #6f7480; --ln: #2c2d31; --ac: #3b82f6; --bd: #c9cbd2;
   }
-
   .cert-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 4cqw; }
   .cert-brand { display: flex; align-items: center; gap: 1.6cqw; }
-  .cert-brand img { height: 4.6cqw; width: auto; display: block; }
-  .cert-wordmark { font-size: 3cqw; font-weight: 800; letter-spacing: -.01em; }
-  .cert-brand .bar { width: 1px; height: 3.2cqw; background: var(--cert-line); }
+  .cert-brand img { height: 4.6cqw; }
+  .cert-wordmark { font-family: var(--display); font-size: 3cqw; font-weight: 800; letter-spacing: -.01em; }
+  .cert-brand .bar { width: 1px; height: 3.2cqw; background: var(--ln); }
   .cert-league, .cert-period {
-    font-size: 1.12cqw; letter-spacing: .24em; text-transform: uppercase;
-    color: var(--cert-label); font-weight: 600;
+    font-family: var(--mono); font-size: 1.04cqw; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--cl); font-weight: 500;
   }
   .cert-period { text-align: right; white-space: nowrap; }
-
   .cert-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
   .cert-kicker {
-    font-size: 1.5cqw; letter-spacing: .22em; text-transform: uppercase;
-    color: var(--cert-accent); font-weight: 700;
+    font-family: var(--mono); font-size: 1.4cqw; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--ac); font-weight: 700;
   }
   .cert-to {
-    font-size: 1.12cqw; letter-spacing: .22em; text-transform: uppercase;
-    color: var(--cert-label); margin-top: 2.4cqw; font-weight: 600;
+    font-family: var(--mono); font-size: 1.04cqw; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--cl); margin-top: 2.4cqw; font-weight: 500;
   }
-  .cert-name { font-size: 5.2cqw; font-weight: 600; margin: 1.4cqw 0 3cqw; letter-spacing: -.01em; }
-  .cert-text { font-size: 2cqw; line-height: 1.78; color: var(--cert-body); max-width: 82%; }
-  .cert-text strong { color: var(--cert-accent); font-weight: 700; }
-
+  .cert-name {
+    font-family: var(--display); font-size: 5.4cqw; font-weight: 600;
+    margin: 1.2cqw 0 3cqw; letter-spacing: -.015em; line-height: 1.04;
+  }
+  .cert-text { font-size: 2cqw; line-height: 1.78; color: var(--bd); max-width: 84%; }
+  .cert-text strong { color: var(--ac); font-weight: 700; }
   .cert-foot { display: flex; align-items: flex-end; gap: 4cqw; }
   .sig { flex: 1; }
-  .sig-line { border-top: 1.6px solid var(--cert-line); padding-top: 1.4cqw; }
+  .sig-line { border-top: 1.5px solid var(--ln); padding-top: 1.3cqw; }
   .sig-role {
-    font-size: 1.04cqw; letter-spacing: .2em; text-transform: uppercase;
-    color: var(--cert-label); font-weight: 600;
+    font-family: var(--mono); font-size: .95cqw; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--cl); font-weight: 500;
   }
-  .sig-name { font-size: 1.7cqw; margin-top: .5cqw; }
+  .sig-name { font-size: 1.7cqw; margin-top: .5cqw; font-weight: 500; }
   .cert-reg {
-    text-align: right; font-size: 1.04cqw; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--cert-label); line-height: 2; font-weight: 600; white-space: nowrap;
+    text-align: right; font-family: var(--mono); font-size: .95cqw;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--cl);
+    line-height: 2.1; font-weight: 500; white-space: nowrap;
   }
-  .cert-reg b { color: var(--cert-body); }
+  .cert-reg b { color: var(--bd); font-weight: 700; }
 
-  /* ---------- painel de verificacao ---------- */
-  .panel {
-    background: var(--panel); border: 1px solid var(--panel-line);
-    border-radius: 12px; padding: 24px; margin-top: 20px;
+  /* ----- secoes ----- */
+  section { animation: rise .9s both; }
+  .verify { animation-delay: .2s; }
+  .ledger { animation-delay: .28s; }
+  .meta { animation-delay: .36s; }
+  .actions { animation-delay: .44s; }
+  .seclabel {
+    display: flex; align-items: center; gap: 14px; margin: 40px 0 18px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--faint);
   }
-  .panel h2 {
-    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 14px;
+  .seclabel::after { content: ""; flex: 1; height: 1px; background: var(--hair); }
+  .seclabel b { color: var(--blue-lt); font-weight: 500; }
+
+  .card { border: 1px solid var(--hair); background: var(--panel); border-radius: 14px; }
+
+  /* ----- verificacao ----- */
+  .checks { padding: 8px 20px; }
+  .check {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 0; font-size: 14.5px; color: var(--dim);
+    border-bottom: 1px solid var(--hair);
   }
-  .check { display: flex; align-items: center; gap: 12px; padding: 9px 0; font-size: 14px; }
-  .check .icon {
-    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  .check:last-child { border-bottom: 0; }
+  .check .ic {
+    width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; background: #eef0f3; color: var(--muted);
+    font-size: 13px; font-weight: 700;
+    border: 1px solid var(--hair); background: rgba(255,255,255,.03); color: var(--faint);
+    transition: all .4s ease;
   }
-  .check.ok .icon { background: rgba(47, 175, 84, .14); color: var(--ok); }
-  .check.fail .icon { background: rgba(224, 73, 47, .14); color: var(--fail); }
-  .check.warn .icon { background: rgba(217, 138, 31, .14); color: var(--warn); }
-  .verdict {
-    margin-top: 16px; padding: 13px; border-radius: 9px;
-    text-align: center; font-weight: 700; font-size: 14px;
-    background: #eef0f3; color: var(--muted);
+  .check.is-scanning .ic {
+    border-color: var(--blue); color: var(--blue);
+    animation: scan 1s ease-in-out infinite;
   }
-  .verdict.ok { background: rgba(47, 175, 84, .12); color: var(--ok); }
-  .verdict.fail { background: rgba(224, 73, 47, .12); color: var(--fail); }
-  .verdict.warn { background: rgba(217, 138, 31, .12); color: var(--warn); }
-  .panel-foot { display: flex; align-items: center; gap: 18px; margin-top: 16px; flex-wrap: wrap; }
-  .qr { width: 96px; height: 96px; flex-shrink: 0; }
-  .qr svg { width: 100%; height: 100%; display: block; }
-  .panel-links { display: flex; flex-direction: column; gap: 7px; font-size: 13px; }
-  a { color: var(--accent); }
-  .retry {
-    background: none; border: 1px solid var(--panel-line); color: var(--accent);
-    font: inherit; font-size: 13px; cursor: pointer; border-radius: 7px; padding: 4px 10px;
-    align-self: flex-start;
+  @keyframes scan {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59,116,255,.5); }
+    50% { box-shadow: 0 0 0 6px rgba(59,116,255,0); }
+  }
+  .check.is-ok { color: var(--ink); }
+  .check.is-ok .ic { border-color: rgba(67,209,127,.5); background: rgba(67,209,127,.13); color: var(--ok); }
+  .check.is-warn { color: var(--ink); }
+  .check.is-warn .ic { border-color: rgba(242,178,61,.5); background: rgba(242,178,61,.13); color: var(--warn); }
+  .check.is-fail { color: var(--ink); }
+  .check.is-fail .ic { border-color: rgba(255,95,84,.5); background: rgba(255,95,84,.13); color: var(--fail); }
+  .check .ctext { flex: 1; }
+  .check .ctag {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--faint);
   }
 
-  @media (max-width: 560px) { .cert-text { max-width: 100%; } }
+  .verdict {
+    margin-top: 14px; padding: 20px; border-radius: 14px;
+    border: 1px solid var(--hair); background: var(--panel);
+    display: flex; align-items: center; gap: 15px;
+    transition: all .5s ease;
+  }
+  .verdict .vmark {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; font-weight: 700;
+    background: rgba(255,255,255,.05); color: var(--faint);
+  }
+  .verdict .vtitle { font-family: var(--display); font-size: 16px; font-weight: 700; }
+  .verdict .vsub { font-size: 12.5px; color: var(--dim); margin-top: 2px; }
+  .verdict.is-ok {
+    border-color: rgba(67,209,127,.4);
+    background: linear-gradient(180deg, rgba(67,209,127,.1), rgba(67,209,127,.03));
+    box-shadow: 0 0 40px -16px rgba(67,209,127,.5);
+  }
+  .verdict.is-ok .vmark { background: rgba(67,209,127,.16); color: var(--ok); animation: pop .5s ease; }
+  .verdict.is-ok .vtitle { color: var(--ok); }
+  .verdict.is-warn { border-color: rgba(242,178,61,.4); background: rgba(242,178,61,.06); }
+  .verdict.is-warn .vmark { background: rgba(242,178,61,.16); color: var(--warn); }
+  .verdict.is-warn .vtitle { color: var(--warn); }
+  .verdict.is-fail { border-color: rgba(255,95,84,.4); background: rgba(255,95,84,.06); }
+  .verdict.is-fail .vmark { background: rgba(255,95,84,.16); color: var(--fail); }
+  .verdict.is-fail .vtitle { color: var(--fail); }
+  @keyframes pop { 0% { transform: scale(.3); opacity: 0; } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  .retry {
+    margin-left: auto; background: none; border: 1px solid var(--hair);
+    color: var(--blue-lt); font-family: var(--mono); font-size: 11px;
+    letter-spacing: .08em; cursor: pointer; border-radius: 8px; padding: 8px 12px;
+  }
+  .retry:hover { background: var(--panel-2); }
+
+  /* ----- ledger on-chain ----- */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--hair); border-radius: 14px; overflow: hidden; }
+  .cell { background: #0d0e12; padding: 18px 20px; }
+  .cell.wide { grid-column: 1 / -1; }
+  .cell .k {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--faint); margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cell .v { font-size: 14.5px; font-weight: 500; }
+  .cell .hash {
+    font-family: var(--mono); font-size: 12px; color: var(--blue-lt);
+    word-break: break-all; line-height: 1.6;
+  }
+  .copy {
+    background: none; border: 1px solid var(--hair); color: var(--dim);
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+    cursor: pointer; border-radius: 6px; padding: 3px 7px;
+  }
+  .copy:hover { color: var(--ink); border-color: var(--blue); }
+
+  /* ----- credencial / meta ----- */
+  .issuer { display: flex; align-items: center; gap: 14px; }
+  .issuer img {
+    width: 44px; height: 44px; border-radius: 10px; background: #fff;
+    padding: 6px; flex-shrink: 0;
+  }
+  .issuer .iname { font-family: var(--display); font-weight: 700; font-size: 15px; }
+  .issuer a { color: var(--blue-lt); font-size: 12.5px; text-decoration: none; }
+  .issuer a:hover { text-decoration: underline; }
+  .crit { font-size: 14px; line-height: 1.7; color: var(--dim); }
+
+  /* ----- acoes ----- */
+  .actions-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .qr {
+    width: 104px; height: 104px; padding: 9px; border-radius: 12px;
+    background: #fff; flex-shrink: 0;
+  }
+  .qr svg { width: 100%; height: 100%; display: block; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--body); font-size: 13.5px; font-weight: 600;
+    padding: 12px 18px; border-radius: 10px; cursor: pointer; text-decoration: none;
+    border: 1px solid var(--hair);
+  }
+  .btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .btn.primary:hover { background: #5587ff; }
+  .btn.ghost { background: var(--panel); color: var(--ink); }
+  .btn.ghost:hover { background: var(--panel-2); }
+  .qr-hint { font-size: 12px; color: var(--faint); max-width: 160px; line-height: 1.5; }
+
+  .sitefoot {
+    margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--hair);
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+    color: var(--faint); text-align: center; line-height: 1.8;
+    animation: rise .9s .5s both;
+  }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 620px) {
+    .grid { grid-template-columns: 1fr; }
+    .cert-text { max-width: 100%; }
+    .topbar { padding: 20px 2px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+  }
   @media print {
     @page { size: A4 landscape; margin: 0; }
     body { background: #fff; padding: 0; }
-    .pagehead, .panel { display: none; }
-    .wrap { max-width: none; }
-    .cert { aspect-ratio: auto; height: 100vh; border-radius: 0; box-shadow: none; }
+    .aura, .grain, .topbar, .verify, .ledger, .meta, .actions, .sitefoot, .seclabel { display: none !important; }
+    .shell { max-width: none; }
+    .stage { padding: 0; perspective: none; }
+    .cert-frame { transform: none !important; }
+    .cert-glow { box-shadow: none; border-radius: 0; }
+    .cert { aspect-ratio: auto; height: 100vh; border-radius: 0; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="pagehead">Verificação de credencial · IBtech</div>
+<div class="aura" id="aura"></div>
+<div class="grain"></div>
 
-  <div class="cert" id="cert" data-variant="solo">
-    <div class="cert-head">
-      <div class="cert-brand">
-        <img src="assets/ibtech-logo.png" alt="IBtech">
-        <span class="cert-wordmark">IBtech</span>
-        <span class="bar"></span>
-        <span class="cert-league" id="league">Liga de Software · Ibmec BH</span>
-      </div>
-      <div class="cert-period" id="period">Certificado · 2026.1</div>
-    </div>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><img src="assets/ibtech-logo.png" alt="IBtech"><b>IBtech</b></div>
+    <div class="pill scan" id="pill"><span class="dot"></span><span id="pillText">Verificando</span></div>
+  </header>
 
-    <div class="cert-body">
-      <div class="cert-kicker" id="kicker">— Certificado de Participação</div>
-      <div class="cert-to">// Concedido a</div>
-      <div class="cert-name" id="certName">—</div>
-      <p class="cert-text" id="certText"></p>
-    </div>
-
-    <div class="cert-foot">
-      <div class="sig">
-        <div class="sig-line"></div>
-        <div class="sig-role">Presidente</div>
-        <div class="sig-name" id="president">—</div>
-      </div>
-      <div class="sig">
-        <div class="sig-line"></div>
-        <div class="sig-role">Vice-Presidente</div>
-        <div class="sig-name" id="vicePresident">—</div>
-      </div>
-      <div class="cert-reg">
-        <div>REG <b id="reg">—</b></div>
-        <div id="issueDate">—</div>
+  <div class="stage" id="stage">
+    <div class="cert-frame" id="frame">
+      <div class="cert-glow" id="glow">
+        <div class="cert" id="cert" data-variant="solo">
+          <div class="cert-head">
+            <div class="cert-brand">
+              <img src="assets/ibtech-logo.png" alt="IBtech">
+              <span class="cert-wordmark">IBtech</span>
+              <span class="bar"></span>
+              <span class="cert-league" id="league"></span>
+            </div>
+            <div class="cert-period" id="period"></div>
+          </div>
+          <div class="cert-body">
+            <div class="cert-kicker" id="kicker"></div>
+            <div class="cert-to">// Concedido a</div>
+            <div class="cert-name" id="certName">—</div>
+            <p class="cert-text" id="certText"></p>
+          </div>
+          <div class="cert-foot">
+            <div class="sig">
+              <div class="sig-line"></div>
+              <div class="sig-role">Presidente</div>
+              <div class="sig-name" id="president"></div>
+            </div>
+            <div class="sig">
+              <div class="sig-line"></div>
+              <div class="sig-role">Vice-Presidente</div>
+              <div class="sig-name" id="vicePresident"></div>
+            </div>
+            <div class="cert-reg">
+              <div>REG <b id="reg">—</b></div>
+              <div id="issueDate"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="panel">
-    <h2>Verificação on-chain</h2>
-    <div class="check" id="c1"><span class="icon">·</span><span>Integridade — o conteúdo não foi alterado</span></div>
-    <div class="check" id="c2"><span class="icon">·</span><span>Inclusão na árvore de Merkle ancorada</span></div>
-    <div class="check" id="c3"><span class="icon">·</span><span>Ancoragem confirmada na blockchain</span></div>
-    <div class="verdict" id="verdict">Verificando…</div>
-    <div class="panel-foot">
-      <div class="qr" id="qr"></div>
-      <div class="panel-links" id="links"></div>
+  <section class="verify">
+    <div class="seclabel">01 <b>Verificação criptográfica</b></div>
+    <div class="card checks">
+      <div class="check is-scanning" id="c1">
+        <div class="ic">·</div>
+        <div class="ctext">Integridade do conteúdo<div class="ctag">SHA-256 do certificado</div></div>
+      </div>
+      <div class="check is-scanning" id="c2">
+        <div class="ic">·</div>
+        <div class="ctext">Inclusão na árvore de Merkle<div class="ctag">prova de pertencimento ao lote</div></div>
+      </div>
+      <div class="check is-scanning" id="c3">
+        <div class="ic">·</div>
+        <div class="ctext">Ancoragem na blockchain<div class="ctag">transação confirmada on-chain</div></div>
+      </div>
     </div>
+    <div class="verdict" id="verdict">
+      <div class="vmark" id="vmark">·</div>
+      <div><div class="vtitle" id="vtitle">Verificando credencial…</div>
+      <div class="vsub" id="vsub">Conferindo integridade e registro on-chain.</div></div>
+    </div>
+  </section>
+
+  <section class="ledger">
+    <div class="seclabel">02 <b>Registro on-chain</b></div>
+    <div class="grid">
+      <div class="cell"><div class="k">Rede</div><div class="v" id="lNet">—</div></div>
+      <div class="cell"><div class="k">Bloco</div><div class="v" id="lBlock">—</div></div>
+      <div class="cell wide">
+        <div class="k">Transação de ancoragem <button class="copy" data-c="tx">copiar</button></div>
+        <div class="hash" id="lTx">—</div>
+      </div>
+      <div class="cell wide">
+        <div class="k">Raiz de Merkle <button class="copy" data-c="root">copiar</button></div>
+        <div class="hash" id="lRoot">—</div>
+      </div>
+      <div class="cell wide">
+        <div class="k">Impressão digital deste certificado <button class="copy" data-c="hash">copiar</button></div>
+        <div class="hash" id="lHash">—</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="meta">
+    <div class="seclabel">03 <b>Credencial</b></div>
+    <div class="grid">
+      <div class="cell wide">
+        <div class="k">Emitido por</div>
+        <div class="issuer">
+          <img src="assets/ibtech-logo.png" alt="IBtech">
+          <div>
+            <div class="iname" id="mIssuer">IBtech</div>
+            <a id="mIssuerUrl" href="#" target="_blank" rel="noopener noreferrer">Liga de Software · Ibmec BH</a>
+          </div>
+        </div>
+      </div>
+      <div class="cell"><div class="k">Emissão</div><div class="v" id="mDate">—</div></div>
+      <div class="cell"><div class="k">Validade</div><div class="v">Não expira</div></div>
+      <div class="cell"><div class="k">Código de autenticidade</div><div class="v" id="mReg">—</div></div>
+      <div class="cell"><div class="k">Padrão</div><div class="v">Open Badges 3.0</div></div>
+      <div class="cell wide"><div class="k">Critérios atendidos</div><div class="crit" id="mCrit">—</div></div>
+    </div>
+  </section>
+
+  <section class="actions">
+    <div class="seclabel">04 <b>Compartilhar</b></div>
+    <div class="card" style="padding:20px">
+      <div class="actions-row">
+        <div class="qr" id="qr"></div>
+        <div class="qr-hint">Aponte a câmera para abrir esta verificação.</div>
+        <div class="btns">
+          <button class="btn primary" onclick="window.print()">Baixar certificado (PDF)</button>
+          <a class="btn ghost" id="aChain" href="#" target="_blank" rel="noopener noreferrer">Ver registro on-chain</a>
+          <a class="btn ghost" id="aJson" href="#" target="_blank" rel="noopener noreferrer">JSON da credencial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sitefoot">
+    Credencial emitida pela IBtech · verificável de forma independente, sem depender do emissor<br>
+    Open Badges 3.0 · ancoragem por árvore de Merkle em blockchain pública
   </div>
 </div>
 
 <script src="qrcode.js"></script>
 <script type="module">
-// RPCs publicos por rede -- tentados em ordem, com fallback (rate limit cai).
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep = (ms) => new Promise((r) => setTimeout(r, RM ? 0 : ms));
+const $ = (id) => document.getElementById(id);
+
 const CHAINS = {
   'ethereum-sepolia': {
-    rpc: [
-      'https://ethereum-sepolia-rpc.publicnode.com',
-      'https://rpc.sepolia.org',
-      'https://1rpc.io/sepolia',
-      'https://sepolia.drpc.org',
-    ],
+    label: 'Ethereum · Sepolia',
+    rpc: ['https://ethereum-sepolia-rpc.publicnode.com', 'https://rpc.sepolia.org',
+          'https://1rpc.io/sepolia', 'https://sepolia.drpc.org'],
     explorer: 'https://sepolia.etherscan.io/tx/',
   },
   'polygon-amoy': {
+    label: 'Polygon · Amoy',
     rpc: ['https://rpc-amoy.polygon.technology', 'https://polygon-amoy-bor-rpc.publicnode.com'],
     explorer: 'https://amoy.polygonscan.com/tx/',
   },
   'polygon': {
+    label: 'Polygon',
     rpc: ['https://polygon-rpc.com', 'https://polygon-bor-rpc.publicnode.com'],
     explorer: 'https://polygonscan.com/tx/',
   },
 };
 
-// --- mesma logica de src/lib.js, no navegador ---
+/* --- mesma logica de src/lib.js, no navegador --- */
 function canonicalize(v) {
   if (Array.isArray(v)) return '[' + v.map(canonicalize).join(',') + ']';
   if (v && typeof v === 'object') {
-    return '{' + Object.keys(v).sort()
-      .map((k) => JSON.stringify(k) + ':' + canonicalize(v[k])).join(',') + '}';
+    return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canonicalize(v[k])).join(',') + '}';
   }
   return JSON.stringify(v);
 }
-const toHex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
-async function sha256OfString(s) {
-  return toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)));
-}
+const toHex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
+const sha = async (s) => toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)));
 function hexToBytes(h) {
   const a = new Uint8Array(h.length / 2);
   for (let i = 0; i < a.length; i++) a[i] = parseInt(h.substr(i * 2, 2), 16);
   return a;
 }
 async function hashPair(a, b) {
-  const ab = hexToBytes(a), bb = hexToBytes(b);
-  const c = new Uint8Array(ab.length + bb.length);
-  c.set(ab); c.set(bb, ab.length);
+  const x = hexToBytes(a), y = hexToBytes(b), c = new Uint8Array(x.length + y.length);
+  c.set(x); c.set(y, x.length);
   return toHex(await crypto.subtle.digest('SHA-256', c));
 }
 async function certHash(cert) {
   const { proof, ...rest } = cert;
-  return sha256OfString(canonicalize(rest));
+  return sha(canonicalize(rest));
 }
 async function verifyMerkle(leaf, path, root) {
   let h = leaf;
@@ -246,8 +510,7 @@ async function fetchTx(rpcs, hash) {
   for (const rpc of rpcs) {
     try {
       const res = await fetch(rpc, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        method: 'POST', headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_getTransactionByHash', params: [hash] }),
       });
       if (!res.ok) continue;
@@ -255,36 +518,42 @@ async function fetchTx(rpcs, hash) {
       if (j.error) continue;
       reached = true;
       return j.result;
-    } catch { /* tenta o proximo */ }
+    } catch { /* proximo RPC */ }
   }
-  if (!reached) throw new Error('nenhum RPC respondeu');
+  if (!reached) throw new Error('rpc');
   return null;
 }
 
-// Escapa HTML e converte **destaque** em negrito.
 function richText(s) {
   const esc = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return esc.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 function setCheck(id, state) {
-  const el = document.getElementById(id);
-  el.classList.remove('ok', 'fail', 'warn');
-  el.classList.add(state);
-  el.querySelector('.icon').textContent = state === 'ok' ? '✓' : state === 'warn' ? '!' : '✕';
+  const el = $(id);
+  el.className = 'check is-' + state;
+  el.querySelector('.ic').textContent = state === 'ok' ? '✓' : state === 'warn' ? '!' : '✕';
 }
-function renderQR(url) {
-  if (!window.qrcode) return;
-  try {
-    const qr = window.qrcode(0, 'M');
-    qr.addData(url);
-    qr.make();
-    document.getElementById('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0 });
-  } catch { /* QR e opcional */ }
+
+/* tilt 3D do certificado */
+function initTilt() {
+  if (RM || matchMedia('(pointer: coarse)').matches) return;
+  const stage = $('stage'), frame = $('frame');
+  stage.addEventListener('pointermove', (e) => {
+    const r = stage.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - .5;
+    const py = (e.clientY - r.top) / r.height - .5;
+    frame.style.setProperty('--ry', (px * 7).toFixed(2) + 'deg');
+    frame.style.setProperty('--rx', (-py * 5).toFixed(2) + 'deg');
+  });
+  stage.addEventListener('pointerleave', () => {
+    frame.style.setProperty('--ry', '0deg');
+    frame.style.setProperty('--rx', '0deg');
+  });
 }
 
 async function run() {
   const id = new URLSearchParams(location.search).get('id');
-  if (!id) { document.getElementById('certName').textContent = 'Informe ?id=<credencial> na URL'; return; }
+  if (!id) { $('certName').textContent = 'Informe ?id=<credencial> na URL'; return; }
 
   let cert;
   try {
@@ -292,73 +561,120 @@ async function run() {
     if (!res.ok) throw new Error();
     cert = await res.json();
   } catch {
-    document.getElementById('certName').textContent = 'Credencial não encontrada';
+    $('certName').textContent = 'Credencial não encontrada';
+    $('pill').className = 'pill fail'; $('pillText').textContent = 'Não encontrada';
     return;
   }
 
-  // ---- renderiza o certificado ----
+  /* ---- documento ---- */
   const ib = cert.ibtech || {};
-  document.getElementById('cert').dataset.variant = ib.variant === 'joint' ? 'joint' : 'solo';
-  document.getElementById('league').textContent = ib.leagueLabel || '';
-  document.getElementById('period').textContent = ib.periodLabel || '';
-  document.getElementById('kicker').textContent = '— ' + (ib.kicker || 'Certificado');
-  document.getElementById('certName').textContent = cert.credentialSubject.name;
-  document.getElementById('certText').innerHTML = richText(ib.body || '');
-  document.getElementById('president').textContent = ib.president || '';
-  document.getElementById('vicePresident').textContent = ib.vicePresident || '';
-  document.getElementById('reg').textContent = ib.reg || '—';
-  document.getElementById('issueDate').textContent = ib.issueDateLabel || '';
-  document.title = `${cert.credentialSubject.name} — ${ib.kicker || 'Certificado'} IBtech`;
+  $('cert').dataset.variant = ib.variant === 'joint' ? 'joint' : 'solo';
+  $('league').textContent = ib.leagueLabel || '';
+  $('period').textContent = ib.periodLabel || '';
+  $('kicker').textContent = '— ' + (ib.kicker || 'Certificado');
+  $('certName').textContent = cert.credentialSubject.name;
+  $('certText').innerHTML = richText(ib.body || '');
+  $('president').textContent = ib.president || '';
+  $('vicePresident').textContent = ib.vicePresident || '';
+  $('reg').textContent = ib.reg || '—';
+  $('issueDate').textContent = ib.issueDateLabel || '';
+  document.title = `${cert.credentialSubject.name} — Certificado IBtech`;
 
-  // ---- verificacao ----
+  /* ---- credencial / meta ---- */
+  $('mIssuer').textContent = (cert.issuer && cert.issuer.name) || 'IBtech';
+  if (cert.issuer && cert.issuer.url) $('mIssuerUrl').href = cert.issuer.url;
+  $('mDate').textContent = ib.issueDateLabel || '';
+  $('mReg').textContent = ib.reg || '—';
+  $('mCrit').textContent = (cert.credentialSubject.achievement &&
+    cert.credentialSubject.achievement.criteria &&
+    cert.credentialSubject.achievement.criteria.narrative) || '';
+
   const proof = cert.proof;
   if (!proof) {
-    document.getElementById('verdict').textContent = 'Credencial ainda não ancorada.';
+    $('vtitle').textContent = 'Credencial ainda não ancorada';
+    $('pill').className = 'pill warn'; $('pillText').textContent = 'Sem âncora';
     return;
   }
   const net = CHAINS[proof.chain] || CHAINS['ethereum-sepolia'];
 
+  /* ---- ledger (dados imediatos) ---- */
+  $('lNet').textContent = net.label;
+  $('lTx').textContent = proof.anchorTransaction;
+  $('lRoot').textContent = proof.merkleRoot;
+  $('lHash').textContent = proof.targetHash;
+  $('aChain').href = net.explorer + proof.anchorTransaction;
+  $('aJson').href = `../certs/signed/${id}.json`;
+
+  /* ---- cerimonia de verificacao ---- */
+  await sleep(550);
   const c1 = (await certHash(cert)) === proof.targetHash;
   setCheck('c1', c1 ? 'ok' : 'fail');
-
+  await sleep(620);
   const c2 = await verifyMerkle(proof.targetHash, proof.merklePath, proof.merkleRoot);
   setCheck('c2', c2 ? 'ok' : 'fail');
+  await sleep(360);
 
   let c3 = 'fail';
   try {
     const tx = await fetchTx(net.rpc, proof.anchorTransaction);
     c3 = (tx && tx.input === '0x' + proof.merkleRoot) ? 'ok' : 'fail';
+    if (tx && tx.blockNumber) $('lBlock').textContent = '#' + parseInt(tx.blockNumber, 16).toLocaleString('pt-BR');
   } catch {
     c3 = 'warn';
+    $('lBlock').textContent = 'rede indisponível';
   }
   setCheck('c3', c3);
+  await sleep(250);
 
-  const verdict = document.getElementById('verdict');
+  /* ---- veredito ---- */
+  const v = $('verdict'), pill = $('pill');
   if (c1 && c2 && c3 === 'ok') {
-    verdict.className = 'verdict ok';
-    verdict.textContent = '✓ Certificado autêntico — registrado e verificado na blockchain';
+    v.className = 'verdict is-ok';
+    $('vmark').textContent = '✓';
+    $('vtitle').textContent = 'Certificado autêntico';
+    $('vsub').textContent = 'Conteúdo íntegro e registrado de forma permanente na blockchain.';
+    pill.className = 'pill ok'; $('pillText').textContent = 'Autêntico';
+    $('aura').classList.add('is-ok');
+    $('glow').classList.add('is-ok');
   } else if (c1 && c2 && c3 === 'warn') {
-    verdict.className = 'verdict warn';
-    verdict.textContent = 'Integridade confirmada. A confirmação on-chain não respondeu — tente novamente.';
+    v.className = 'verdict is-warn';
+    $('vmark').textContent = '!';
+    $('vtitle').textContent = 'Integridade confirmada';
+    $('vsub').textContent = 'A rede não respondeu para confirmar a âncora. Tente novamente.';
+    pill.className = 'pill warn'; $('pillText').textContent = 'Reconferir';
+    const b = document.createElement('button');
+    b.className = 'retry'; b.textContent = 'verificar de novo';
+    b.onclick = () => location.reload();
+    v.appendChild(b);
   } else {
-    verdict.className = 'verdict fail';
-    verdict.textContent = '✕ Certificado não pôde ser verificado';
+    v.className = 'verdict is-fail';
+    $('vmark').textContent = '✕';
+    $('vtitle').textContent = 'Certificado não verificado';
+    $('vsub').textContent = 'O conteúdo não confere com o registro on-chain.';
+    pill.className = 'pill fail'; $('pillText').textContent = 'Inválido';
   }
 
-  const links = document.getElementById('links');
-  links.innerHTML =
-    `<a href="${net.explorer}${proof.anchorTransaction}" target="_blank" rel="noopener noreferrer">Ver registro on-chain</a>` +
-    `<a href="../certs/signed/${id}.json" target="_blank" rel="noopener noreferrer">JSON da credencial</a>`;
-  if (c3 === 'warn') {
-    const btn = document.createElement('button');
-    btn.className = 'retry';
-    btn.textContent = 'Verificar novamente';
-    btn.onclick = () => location.reload();
-    links.appendChild(btn);
+  if (window.qrcode) {
+    try {
+      const qr = window.qrcode(0, 'M');
+      qr.addData(location.href); qr.make();
+      $('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0 });
+    } catch { /* QR opcional */ }
   }
-
-  renderQR(location.href);
 }
+
+document.querySelectorAll('.copy').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const map = { tx: 'lTx', root: 'lRoot', hash: 'lHash' };
+    try {
+      await navigator.clipboard.writeText($(map[btn.dataset.c]).textContent);
+      const t = btn.textContent; btn.textContent = 'copiado';
+      setTimeout(() => { btn.textContent = t; }, 1200);
+    } catch { /* sem clipboard */ }
+  });
+});
+
+initTilt();
 run();
 </script>
 </body>

@@ -3,7 +3,7 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:965f33a6-f08c-4062-a583-dc167f626c02",
+  "id": "urn:uuid:4d002cb0-786e-4803-a528-836187a8ca10",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
@@ -27,7 +27,7 @@
     "type": [
       "AchievementSubject"
     ],
-    "name": "Joshua Azze Distel",
+    "name": "Luiza Paviotti Penido",
     "achievement": {
       "id": "https://joshazze.github.io/ibtech-credenciais/badges/certificado-de-participacao-ibtech-2026-1",
       "type": [
@@ -45,10 +45,34 @@
     "kicker": "Certificado de Participação",
     "leagueLabel": "Liga de Software · Ibmec BH",
     "periodLabel": "Certificado · 2026.1",
-    "reg": "032/2026",
+    "reg": "025/2026",
     "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
     "president": "Nome do Presidente",
     "vicePresident": "Nome do Vice-Presidente",
     "issueDateLabel": "18 / MAI / 2026"
+  },
+  "proof": {
+    "type": "MerkleProofIbTech2026",
+    "chain": "ethereum-sepolia",
+    "anchorTransaction": "0x2dd9671854232fbe9b1558031a367bdb273e93e83f3eda308e6c5e533295af73",
+    "merkleRoot": "9307b88c565fb9a58d86f1e187063c6ccccd6b11ca91cc6f08f0561e9ee66818",
+    "targetHash": "f68d2302ff6c7ab168db7847c9ec8271d7feddfd00156eb7937adbda54e19f5f",
+    "merklePath": [
+      {
+        "left": "c70c58d9bfca271287bb8f29c54d1134815a425fbdaae353869e265167d56eee"
+      },
+      {
+        "right": "e4d5935d0dd16169fee3bee7145c60ce19f5a3051d98a206e4db28d1d0258fb7"
+      },
+      {
+        "right": "6f069770d73e4bb61bd63e6591d559eae8fb8b0829a6b0299652f79fb3e6a153"
+      },
+      {
+        "left": "48e69f2270c66838e4a22380158d8891b8c5b3af1e9d7913c61fbaa42f1f426d"
+      },
+      {
+        "left": "0ab38bdde40c0e47a9fead9397db47ba6ff9c4cfbe0c8e82722f3f3758e0f2e6"
+      }
+    ]
   }
 }

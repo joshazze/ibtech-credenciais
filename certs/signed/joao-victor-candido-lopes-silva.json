@@ -3,7 +3,7 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:965f33a6-f08c-4062-a583-dc167f626c02",
+  "id": "urn:uuid:9a9fedb2-49d0-4976-8452-eb0f6969fd41",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
@@ -27,7 +27,7 @@
     "type": [
       "AchievementSubject"
     ],
-    "name": "Joshua Azze Distel",
+    "name": "João Victor Cândido Lopes Silva",
     "achievement": {
       "id": "https://joshazze.github.io/ibtech-credenciais/badges/certificado-de-participacao-ibtech-2026-1",
       "type": [
@@ -45,10 +45,34 @@
     "kicker": "Certificado de Participação",
     "leagueLabel": "Liga de Software · Ibmec BH",
     "periodLabel": "Certificado · 2026.1",
-    "reg": "032/2026",
+    "reg": "019/2026",
     "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
     "president": "Nome do Presidente",
     "vicePresident": "Nome do Vice-Presidente",
     "issueDateLabel": "18 / MAI / 2026"
+  },
+  "proof": {
+    "type": "MerkleProofIbTech2026",
+    "chain": "ethereum-sepolia",
+    "anchorTransaction": "0x2dd9671854232fbe9b1558031a367bdb273e93e83f3eda308e6c5e533295af73",
+    "merkleRoot": "9307b88c565fb9a58d86f1e187063c6ccccd6b11ca91cc6f08f0561e9ee66818",
+    "targetHash": "46845f5a9dcc94f5c759919ef15bf82bcaffde0cbfe5f0aa46de80bc07b2a8e5",
+    "merklePath": [
+      {
+        "right": "cbe5ef994d2aef9160e1664047d2858054885765fc50b154c758d6133cd9f087"
+      },
+      {
+        "left": "a59735fc7de3bff12a5475f034d1ab6d9ede1e51d0d8170cd0f1b668eb545a47"
+      },
+      {
+        "right": "85210c8d3caf2a5474d0e2ed51d06542567de25992b8d5ac88793a924eb8346c"
+      },
+      {
+        "right": "22eadf3282f802fa0d8b1f6b69467494899e09bbe1d668ba8647bd8485131d79"
+      },
+      {
+        "left": "0ab38bdde40c0e47a9fead9397db47ba6ff9c4cfbe0c8e82722f3f3758e0f2e6"
+      }
+    ]
   }
 }
