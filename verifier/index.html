@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verificacao de Credencial — IbTech</title>
+<title>Verificação de Credencial — IbTech</title>
 <style>
   :root {
     --bg: #0e1116;
@@ -14,6 +14,7 @@
     --accent: #3b6ef5;
     --ok: #34c759;
     --fail: #ff5b5b;
+    --warn: #e8a33d;
     --pending: #8a93a3;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,34 +54,40 @@
   }
   .check.ok .icon { background: rgba(52,199,89,.15); color: var(--ok); }
   .check.fail .icon { background: rgba(255,91,91,.15); color: var(--fail); }
+  .check.warn .icon { background: rgba(232,163,61,.15); color: var(--warn); }
   .verdict {
     margin-top: 18px; padding: 14px; border-radius: 10px;
     text-align: center; font-weight: 700; font-size: 15px;
   }
   .verdict.ok { background: rgba(52,199,89,.13); color: var(--ok); }
   .verdict.fail { background: rgba(255,91,91,.13); color: var(--fail); }
+  .verdict.warn { background: rgba(232,163,61,.13); color: var(--warn); }
   .verdict.pending { background: #232a35; color: var(--muted); }
   a { color: var(--accent); }
-  .links { font-size: 13px; margin-top: 14px; display: flex; gap: 18px; }
+  .links { font-size: 13px; margin-top: 14px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .retry {
+    background: none; border: 1px solid var(--line); color: var(--accent);
+    font: inherit; font-size: 13px; cursor: pointer; border-radius: 8px; padding: 4px 10px;
+  }
 </style>
 </head>
 <body>
 <main>
-  <div class="brand"><span class="dot"></span> IbTech · Verificacao de Credencial</div>
+  <div class="brand"><span class="dot"></span> IbTech · Verificação de Credencial</div>
 
   <div class="card" id="card">
     <div class="badge-name" id="badgeName">Carregando…</div>
     <div class="badge-desc" id="badgeDesc"></div>
     <div class="field"><span class="k">Concedido a</span><span class="v" id="fRecipient">—</span></div>
     <div class="field"><span class="k">Emitido por</span><span class="v" id="fIssuer">—</span></div>
-    <div class="field"><span class="k">Data de emissao</span><span class="v" id="fDate">—</span></div>
+    <div class="field"><span class="k">Data de emissão</span><span class="v" id="fDate">—</span></div>
     <div class="field"><span class="k">Rede</span><span class="v" id="fChain">—</span></div>
   </div>
 
   <div class="card">
-    <h2>Verificacao</h2>
-    <div class="check" id="c1"><span class="icon">·</span><span>Integridade — o conteudo nao foi alterado</span></div>
-    <div class="check" id="c2"><span class="icon">·</span><span>Inclusao na arvore de Merkle ancorada</span></div>
+    <h2>Verificação</h2>
+    <div class="check" id="c1"><span class="icon">·</span><span>Integridade — o conteúdo não foi alterado</span></div>
+    <div class="check" id="c2"><span class="icon">·</span><span>Inclusão na árvore de Merkle ancorada</span></div>
     <div class="check" id="c3"><span class="icon">·</span><span>Ancoragem confirmada na blockchain</span></div>
     <div class="verdict pending" id="verdict">Verificando…</div>
     <div class="links" id="links"></div>
@@ -88,13 +95,35 @@
 </main>
 
 <script type="module">
+// RPCs publicos por rede -- tentados em ordem, com fallback, porque
+// endpoints publicos aplicam rate limit e caem de vez em quando.
 const CHAINS = {
-  'ethereum-sepolia': { rpc: 'https://ethereum-sepolia-rpc.publicnode.com', explorer: 'https://sepolia.etherscan.io/tx/' },
-  'polygon-amoy':     { rpc: 'https://rpc-amoy.polygon.technology',         explorer: 'https://amoy.polygonscan.com/tx/' },
-  'polygon':          { rpc: 'https://polygon-rpc.com',                     explorer: 'https://polygonscan.com/tx/' },
+  'ethereum-sepolia': {
+    rpc: [
+      'https://ethereum-sepolia-rpc.publicnode.com',
+      'https://rpc.sepolia.org',
+      'https://1rpc.io/sepolia',
+      'https://sepolia.drpc.org',
+    ],
+    explorer: 'https://sepolia.etherscan.io/tx/',
+  },
+  'polygon-amoy': {
+    rpc: [
+      'https://rpc-amoy.polygon.technology',
+      'https://polygon-amoy-bor-rpc.publicnode.com',
+    ],
+    explorer: 'https://amoy.polygonscan.com/tx/',
+  },
+  'polygon': {
+    rpc: [
+      'https://polygon-rpc.com',
+      'https://polygon-bor-rpc.publicnode.com',
+    ],
+    explorer: 'https://polygonscan.com/tx/',
+  },
 };
 
-// --- mesma logica de lib.js, no navegador ---
+// --- mesma logica de src/lib.js, no navegador ---
 function canonicalize(v) {
   if (Array.isArray(v)) return '[' + v.map(canonicalize).join(',') + ']';
   if (v && typeof v === 'object') {
@@ -103,9 +132,9 @@ function canonicalize(v) {
   }
   return JSON.stringify(v);
 }
-const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+const toHex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 async function sha256OfString(s) {
-  return hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)));
+  return toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)));
 }
 function hexToBytes(h) {
   const a = new Uint8Array(h.length / 2);
@@ -116,7 +145,7 @@ async function hashPair(a, b) {
   const ab = hexToBytes(a), bb = hexToBytes(b);
   const c = new Uint8Array(ab.length + bb.length);
   c.set(ab); c.set(bb, ab.length);
-  return hex(await crypto.subtle.digest('SHA-256', c));
+  return toHex(await crypto.subtle.digest('SHA-256', c));
 }
 async function certHash(cert) {
   const { proof, ...rest } = cert;
@@ -128,10 +157,33 @@ async function verifyMerkle(leaf, path, root) {
   return h === root;
 }
 
-function setCheck(id, pass) {
+// Busca a transacao tentando cada RPC. Lanca erro se NENHUM responder
+// (situacao inconclusiva, distinta de "transacao nao encontrada").
+async function fetchTx(rpcs, hash) {
+  let reached = false;
+  for (const rpc of rpcs) {
+    try {
+      const res = await fetch(rpc, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_getTransactionByHash', params: [hash] }),
+      });
+      if (!res.ok) continue;
+      const j = await res.json();
+      if (j.error) continue;
+      reached = true;
+      return j.result; // objeto da tx, ou null se realmente nao existe
+    } catch { /* tenta o proximo RPC */ }
+  }
+  if (!reached) throw new Error('nenhum RPC respondeu');
+  return null;
+}
+
+function setCheck(id, state) {
   const el = document.getElementById(id);
-  el.classList.add(pass ? 'ok' : 'fail');
-  el.querySelector('.icon').textContent = pass ? '✓' : '✕';
+  el.classList.remove('ok', 'fail', 'warn');
+  el.classList.add(state);
+  el.querySelector('.icon').textContent = state === 'ok' ? '✓' : state === 'warn' ? '!' : '✕';
 }
 
 async function run() {
@@ -144,7 +196,7 @@ async function run() {
     if (!res.ok) throw new Error();
     cert = await res.json();
   } catch {
-    document.getElementById('badgeName').textContent = 'Credencial nao encontrada';
+    document.getElementById('badgeName').textContent = 'Credencial não encontrada';
     return;
   }
 
@@ -159,33 +211,45 @@ async function run() {
   const proof = cert.proof;
   const net = CHAINS[proof.chain];
 
+  // 1 e 2 -- locais, deterministicas, nao dependem de rede.
   const c1 = (await certHash(cert)) === proof.targetHash;
-  setCheck('c1', c1);
+  setCheck('c1', c1 ? 'ok' : 'fail');
 
   const c2 = await verifyMerkle(proof.targetHash, proof.merklePath, proof.merkleRoot);
-  setCheck('c2', c2);
+  setCheck('c2', c2 ? 'ok' : 'fail');
 
-  let c3 = false;
+  // 3 -- on-chain. Tres estados: ok | fail (adulterada) | warn (RPC fora do ar).
+  let c3 = 'fail';
   try {
-    const res = await fetch(net.rpc, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'eth_getTransactionByHash', params: [proof.anchorTransaction] }),
-    });
-    const tx = (await res.json()).result;
-    c3 = !!tx && tx.input === '0x' + proof.merkleRoot;
-  } catch { c3 = false; }
+    const tx = await fetchTx(net.rpc, proof.anchorTransaction);
+    c3 = (tx && tx.input === '0x' + proof.merkleRoot) ? 'ok' : 'fail';
+  } catch {
+    c3 = 'warn';
+  }
   setCheck('c3', c3);
 
   const verdict = document.getElementById('verdict');
-  const all = c1 && c2 && c3;
-  verdict.className = 'verdict ' + (all ? 'ok' : 'fail');
-  verdict.textContent = all ? '✓ Credencial autentica e verificada on-chain' : '✕ Credencial nao pode ser verificada';
+  if (c1 && c2 && c3 === 'ok') {
+    verdict.className = 'verdict ok';
+    verdict.textContent = '✓ Credencial autêntica e verificada on-chain';
+  } else if (c1 && c2 && c3 === 'warn') {
+    verdict.className = 'verdict warn';
+    verdict.textContent = 'Integridade confirmada. A confirmação on-chain não respondeu agora — tente novamente.';
+  } else {
+    verdict.className = 'verdict fail';
+    verdict.textContent = '✕ Credencial não pôde ser verificada';
+  }
 
-  if (net) {
-    document.getElementById('links').innerHTML =
-      `<a href="${net.explorer}${proof.anchorTransaction}" target="_blank" rel="noopener noreferrer">Ver transacao on-chain</a>` +
-      `<a href="../certs/signed/${id}.json" target="_blank" rel="noopener noreferrer">JSON da credencial</a>`;
+  const links = document.getElementById('links');
+  links.innerHTML =
+    `<a href="${net.explorer}${proof.anchorTransaction}" target="_blank" rel="noopener noreferrer">Ver transação on-chain</a>` +
+    `<a href="../certs/signed/${id}.json" target="_blank" rel="noopener noreferrer">JSON da credencial</a>`;
+  if (c3 === 'warn') {
+    const btn = document.createElement('button');
+    btn.className = 'retry';
+    btn.textContent = 'Verificar novamente';
+    btn.onclick = () => location.reload();
+    links.appendChild(btn);
   }
 }
 run();
