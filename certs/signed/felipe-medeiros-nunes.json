@@ -3,7 +3,7 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:965f33a6-f08c-4062-a583-dc167f626c02",
+  "id": "urn:uuid:4a11b275-2593-49ac-af58-106f73654433",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
@@ -27,7 +27,7 @@
     "type": [
       "AchievementSubject"
     ],
-    "name": "Joshua Azze Distel",
+    "name": "Felipe Medeiros Nunes",
     "achievement": {
       "id": "https://joshazze.github.io/ibtech-credenciais/badges/certificado-de-participacao-ibtech-2026-1",
       "type": [
@@ -45,10 +45,34 @@
     "kicker": "Certificado de Participação",
     "leagueLabel": "Liga de Software · Ibmec BH",
     "periodLabel": "Certificado · 2026.1",
-    "reg": "032/2026",
+    "reg": "011/2026",
     "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
     "president": "Nome do Presidente",
     "vicePresident": "Nome do Vice-Presidente",
     "issueDateLabel": "18 / MAI / 2026"
+  },
+  "proof": {
+    "type": "MerkleProofIbTech2026",
+    "chain": "ethereum-sepolia",
+    "anchorTransaction": "0x2dd9671854232fbe9b1558031a367bdb273e93e83f3eda308e6c5e533295af73",
+    "merkleRoot": "9307b88c565fb9a58d86f1e187063c6ccccd6b11ca91cc6f08f0561e9ee66818",
+    "targetHash": "b6cd2e294b9d63823ae188c231cb5001f80710dd47d7d35fd9d70dcf193240a3",
+    "merklePath": [
+      {
+        "right": "9d8b50e1c2792ba920ebd6bc9599ecde9f6ae6c871f12f24bde628ae4a7e7b93"
+      },
+      {
+        "left": "12b52c4c54b9831cc159cb0812484814d1b955edbc19b973f531ee8af430e863"
+      },
+      {
+        "right": "4438752097b3e6c97469aebda4146227956dad49d28b1569e006c103de03f5bf"
+      },
+      {
+        "left": "794a32f315bafde8194ce49e974027cf6ee69f7293c517e0500061f515376cc2"
+      },
+      {
+        "right": "fc88177817241944b466ffa816639f7afa6dadaf7807b02d260e1fa028afadaf"
+      }
+    ]
   }
 }
