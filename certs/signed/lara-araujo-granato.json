@@ -3,7 +3,7 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "urn:uuid:b7d41d46-df9e-4c4f-9ee7-fa858ddad776",
+  "id": "urn:uuid:0cf0be4d-c389-43e1-87c0-8407386024e1",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
@@ -47,31 +47,31 @@
     "periodLabel": "Certificado · 2026.1",
     "reg": "022/2026",
     "body": "Pela participação ativa nas atividades da **IBtech** — Liga de Software do Ibmec BH — durante o **semestre 2026.1**, tendo cumprido os **requisitos de presença**, desenvolvido e tido aprovado o **projeto de conclusão** dentro dos critérios estabelecidos, e cumprido suas obrigações **sem qualquer medida disciplinar**.",
-    "president": "Nome do Presidente",
-    "vicePresident": "Nome do Vice-Presidente",
+    "president": "Igor Conrado",
+    "vicePresident": "Joshua Azze",
     "issueDateLabel": "18 / MAI / 2026"
   },
   "proof": {
     "type": "MerkleProofIbTech2026",
     "chain": "ethereum-sepolia",
-    "anchorTransaction": "0x2dd9671854232fbe9b1558031a367bdb273e93e83f3eda308e6c5e533295af73",
-    "merkleRoot": "9307b88c565fb9a58d86f1e187063c6ccccd6b11ca91cc6f08f0561e9ee66818",
-    "targetHash": "c81134d2151eb5f8fe986a828cb54857c11ca6e293c243f607a91ed8248f8999",
+    "anchorTransaction": "0xa9e9b538f7ac13ca042d240ed80a38c4175313704aca1f9ecad895abf86b387b",
+    "merkleRoot": "6f05afbe83461bd7571f0f82af87e006575ac120cfdee19abefe2d95d94a6eba",
+    "targetHash": "8922a514f5bc9af68f5ee8bb77591e40684af989806b337b56c01200e617ad34",
     "merklePath": [
       {
-        "right": "1bd72967837cad93e01d1bd1e53a454a6b909a9e78b9d4a28755e07a965e2a40"
+        "right": "1a975b81e5fade5f4510a8fe1b05501dc9b8db501b8a2ddb7e4ec13bfb6946d9"
       },
       {
-        "left": "169097cfa3d37a19b110457b92abd00dc1fd361a2c7e9b535b29a6fd6767039d"
+        "left": "7b4d54f56bc5c097dd956db9974ef2112d12cb4f7cebc2705c93486d30393b1c"
       },
       {
-        "left": "c8596320841a73bc900867720ef2034cda2106fe467befb40fa7f46586bb8929"
+        "left": "06500f0ae0e8fe6e94d6cfb2869e863064ec78fb0ea81f13e3bcef9dfd67bc7a"
       },
       {
-        "right": "22eadf3282f802fa0d8b1f6b69467494899e09bbe1d668ba8647bd8485131d79"
+        "right": "d0f9def7ccb22361ee55923a33be5716afe5342994809240a8134a5fabe56635"
       },
       {
-        "left": "0ab38bdde40c0e47a9fead9397db47ba6ff9c4cfbe0c8e82722f3f3758e0f2e6"
+        "left": "f45a3e205855f6db8fec7d1f881b4b1789499d502276bbc5294f93d7458c98da"
       }
     ]
   }
