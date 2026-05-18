@@ -1,0 +1,5 @@
+{
+  "name": "Teste de Credencial - IbTech",
+  "description": "Credencial emitida para validar o pipeline de emissao de credenciais verificaveis on-chain da IbTech.",
+  "criteria": "Executou com sucesso uma emissao de teste do sistema de credenciais da IbTech."
+}

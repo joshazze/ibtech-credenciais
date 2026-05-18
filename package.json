@@ -1,0 +1,16 @@
+{
+  "name": "ibtech-credenciais",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Emissao de credenciais verificaveis on-chain da IbTech (Open Badges 3.0 / Blockcerts)",
+  "scripts": {
+    "keygen": "node src/keygen.js",
+    "build": "node src/build.js",
+    "anchor": "node --env-file=.env src/anchor.js",
+    "verify": "node --env-file=.env src/verify.js"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  }
+}
