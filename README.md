@@ -58,13 +58,13 @@ npm run verify -- certs/signed/joshua-azze-distel.json
 
 ## Faucet (rede de teste)
 
-A configuracao padrao usa a testnet **Polygon Amoy** — tokens de graca:
+A configuracao padrao usa a testnet **Ethereum Sepolia** — tokens de graca:
 
-- https://faucet.polygon.technology — selecione a rede **Amoy**
-- Alternativa: qualquer faucet de **POL Amoy**
+- https://cloud.google.com/application/web3/faucet — rede **Ethereum Sepolia** (login Google)
+- Alternativa: qualquer faucet de **Sepolia ETH**
 
-Para emitir de verdade, troque no `.env`:
-`RPC_URL=https://polygon-rpc.com` e `CHAIN=polygon`.
+O verificador reconhece as redes `ethereum-sepolia`, `polygon-amoy` e `polygon`.
+Para emitir de verdade, troque no `.env` para `CHAIN=polygon` e um RPC de mainnet.
 
 ## Verificacao publica e o botao do LinkedIn
 
